@@ -1,9 +1,12 @@
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Initialize Resend only if key is present to avoid build-time errors
+const resend = process.env.RESEND_API_KEY
+  ? new Resend(process.env.RESEND_API_KEY)
+  : null;
 
 export async function sendRoleEmail(email: string, name: string, role: string, link: string) {
-  if (!process.env.RESEND_API_KEY) {
+  if (!resend) {
     console.log('[MOCK EMAIL] (Set RESEND_API_KEY to send real emails)');
     console.log(`To: ${email}, Role: ${role}, Link: ${link}`);
     return true;
@@ -11,7 +14,7 @@ export async function sendRoleEmail(email: string, name: string, role: string, l
 
   try {
     const data = await resend.emails.send({
-      from: 'El Impostor <onboarding@resend.dev>', // Default Resend test domain
+      from: 'El Impostor <onboarding@resend.dev>',
       to: email, // Only works for your own email in test mode unless domain verified
       subject: 'Tu Identidad Secreta - El Impostor',
       html: `
