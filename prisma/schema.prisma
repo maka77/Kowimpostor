@@ -1,0 +1,42 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  code      String   @unique
+  status    String   @default("LOBBY") // LOBBY, PLAYING, VOTING, FINISHED
+  createdAt DateTime @default(now())
+  players   Player[]
+  round     Int      @default(0)
+}
+
+model Player {
+  id        String   @id @default(uuid())
+  sessionId String
+  session   Session  @relation(fields: [sessionId], references: [id])
+  name      String
+  email     String
+  token     String   @unique
+  role      String?
+  roleDesc  String?
+  isAlive   Boolean  @default(true)
+  votes     Vote[]   @relation("VotesCast")
+  receivedVotes Vote[] @relation("VotesReceived")
+}
+
+model Vote {
+  id        String   @id @default(uuid())
+  round     Int
+  voterId   String
+  voter     Player   @relation("VotesCast", fields: [voterId], references: [id])
+  targetId  String
+  target    Player   @relation("VotesReceived", fields: [targetId], references: [id])
+  
+  @@unique([round, voterId])
+}
