@@ -55,13 +55,25 @@ export default function HostPage() {
     const addPlayer = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!newName || !newEmail) return;
-        await fetch('/api/player', {
-            method: 'POST',
-            body: JSON.stringify({ sessionCode, name: newName, email: newEmail }),
-        });
-        setNewName('');
-        setNewEmail('');
-        fetchSessionInfo(); // Refresh immediately
+
+        try {
+            const res = await fetch('/api/player', {
+                method: 'POST',
+                body: JSON.stringify({ sessionCode, name: newName, email: newEmail }),
+            });
+
+            if (!res.ok) {
+                const data = await res.json();
+                throw new Error(data.error || 'Failed to add player');
+            }
+
+            setNewName('');
+            setNewEmail('');
+            fetchSessionInfo(); // Refresh immediately
+        } catch (error) {
+            console.error(error);
+            alert(error instanceof Error ? error.message : 'Error adding player');
+        }
     };
 
     const startGame = async () => {
