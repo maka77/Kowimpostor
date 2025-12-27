@@ -123,7 +123,7 @@ export default function HostPage() {
         if (!sessionCode) return;
         // I need to implement this endpoint.
         // For now I'll stub it or quickly implement it in step 3.
-        const res = await fetch(`/api/admin/session?code=${sessionCode}`);
+        const res = await fetch(`/api/session?code=${sessionCode}`);
         if (res.ok) {
             const data = await res.json();
             setStatus(data.status);
