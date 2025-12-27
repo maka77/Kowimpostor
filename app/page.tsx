@@ -8,7 +8,7 @@ export default function Home() {
           El Impostor
         </h1>
         <p className="text-neutral-600 max-w-md mx-auto text-sm leading-relaxed">
-          Un juego de deducción social, secretos y paranoia lúdica.
+          Paren al impostor🤚, no la regales, pensá!
           <br />Confía en nadie.
         </p>
       </div>
