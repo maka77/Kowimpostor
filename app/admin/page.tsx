@@ -51,9 +51,23 @@ export default function AdminPage() {
         }
     };
 
+
+    const handleLogout = async () => {
+        await fetch('/api/admin/logout', { method: 'POST' });
+        window.location.href = '/admin/login';
+    };
+
     return (
         <div className="min-h-screen bg-gray-950 text-white p-8 font-mono">
-            <h1 className="text-3xl mb-8 text-yellow-400 uppercase tracking-widest">Admin Dashboard</h1>
+            <div className="flex justify-between items-center mb-8">
+                <h1 className="text-3xl text-yellow-400 uppercase tracking-widest">Admin Dashboard</h1>
+                <button
+                    onClick={handleLogout}
+                    className="text-gray-500 hover:text-white text-sm uppercase tracking-wider hover:underline"
+                >
+                    Logout
+                </button>
+            </div>
 
             {loading ? (
                 <div className="text-gray-500 animate-pulse">Loading data...</div>
@@ -75,8 +89,8 @@ export default function AdminPage() {
                                     <td className="px-6 py-4 font-bold text-yellow-100">{session.code}</td>
                                     <td className="px-6 py-4">
                                         <span className={`px-2 py-1 rounded text-xs border ${session.status === 'LOBBY' ? 'border-green-800 text-green-400 bg-green-950/30' :
-                                                session.status === 'PLAYING' ? 'border-blue-800 text-blue-400 bg-blue-950/30' :
-                                                    'border-gray-700 text-gray-500'
+                                            session.status === 'PLAYING' ? 'border-blue-800 text-blue-400 bg-blue-950/30' :
+                                                'border-gray-700 text-gray-500'
                                             }`}>
                                             {session.status}
                                         </span>
