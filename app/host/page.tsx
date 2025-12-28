@@ -32,6 +32,11 @@ export default function HostPage() {
     const [loading, setLoading] = useState(false);
     const [lastResult, setLastResult] = useState<VoteResult | null>(null);
 
+    // Game Config
+    const [gameMode, setGameMode] = useState<'AI' | 'MANUAL'>('AI');
+    const [topic, setTopic] = useState('Futbol General');
+    const [secretWord, setSecretWord] = useState('');
+
     const createSession = async () => {
         setLoading(true);
         // Reset error state if I added it, but I need to add state first.
@@ -81,7 +86,12 @@ export default function HostPage() {
         setLoading(true);
         await fetch('/api/start', {
             method: 'POST',
-            body: JSON.stringify({ sessionCode }),
+            body: JSON.stringify({
+                sessionCode,
+                gameMode,
+                topic: gameMode === 'AI' ? topic : undefined,
+                secretWord: gameMode === 'MANUAL' ? secretWord : undefined
+            }),
         });
         setLoading(false);
         fetchSessionInfo();
@@ -183,8 +193,62 @@ export default function HostPage() {
                         </form>
                     </div>
 
+                    <div className="card space-y-4">
+                        <h3 className="text-lg font-medium text-neutral-300">Configuración de Partida</h3>
+
+                        <div className="flex gap-4 mb-4">
+                            <button
+                                onClick={() => setGameMode('AI')}
+                                className={`px-4 py-2 rounded text-sm font-bold transition-colors ${gameMode === 'AI' ? 'bg-indigo-600 text-white' : 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700'}`}
+                            >
+                                MODO IA (Tópico)
+                            </button>
+                            <button
+                                onClick={() => setGameMode('MANUAL')}
+                                className={`px-4 py-2 rounded text-sm font-bold transition-colors ${gameMode === 'MANUAL' ? 'bg-indigo-600 text-white' : 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700'}`}
+                            >
+                                MODO MANUAL (Moderador)
+                            </button>
+                        </div>
+
+                        {gameMode === 'AI' ? (
+                            <div className="space-y-2">
+                                <label className="text-xs uppercase text-neutral-500 font-bold">Elige un Tópico</label>
+                                <select
+                                    className="input w-full bg-neutral-900"
+                                    value={topic}
+                                    onChange={e => setTopic(e.target.value)}
+                                >
+                                    <option value="Futbol General">Fútbol General (Mundial)</option>
+                                    <option value="Famosos">Famosos (Mundial)</option>
+                                    <option value="Farandula Argentina">Farándula Argentina</option>
+                                    <option value="Futbol Nacional">Fútbol Nacional (Argentina)</option>
+                                    <option value="Politica">Política (Mundial/Argentina)</option>
+                                    <option value="Historia">Historia Argentina</option>
+                                </select>
+                                <p className="text-xs text-neutral-500 mt-2">
+                                    La IA elegirá un personaje secreto basado en este tópico y lo enviará a los ciudadanos.
+                                </p>
+                            </div>
+                        ) : (
+                            <div className="space-y-2">
+                                <label className="text-xs uppercase text-neutral-500 font-bold">Palabra/Personaje Secreto</label>
+                                <input
+                                    type="text"
+                                    className="input w-full"
+                                    placeholder="Ej: Lionel Messi"
+                                    value={secretWord}
+                                    onChange={e => setSecretWord(e.target.value)}
+                                />
+                                <p className="text-xs text-neutral-500 mt-2">
+                                    Tú eliges la palabra. Asegúrate de no decirla en voz alta. Los ciudadanos la recibirán por email.
+                                </p>
+                            </div>
+                        )}
+                    </div>
+
                     <div className="flex justify-end">
-                        <button onClick={startGame} disabled={players.length < 3 || loading} className="btn btn-primary">
+                        <button onClick={startGame} disabled={players.length < 3 || loading || (gameMode === 'MANUAL' && !secretWord)} className="btn btn-primary">
                             Comenzar Juego ({players.length})
                         </button>
                     </div>
