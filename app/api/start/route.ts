@@ -69,14 +69,14 @@ export async function POST(req: Request) {
     for (const p of impostors) {
         updates.push(prisma.player.update({
             where: { id: p.id },
-            data: { role: 'IMPOSTOR', roleDesc: 'Sabotea y elimina a los demás.' }
+            data: { role: 'IMPOSTOR', roleDesc: 'No te regales!, Pensá bien' }
         }));
     }
 
     for (const p of innocents) {
         updates.push(prisma.player.update({
             where: { id: p.id },
-            data: { role: 'CIUDADANO', roleDesc: 'Descubre al impostor.' }
+            data: { role: 'JUGADOR', roleDesc: 'Descubre al impostor.' }
         }));
     }
 
