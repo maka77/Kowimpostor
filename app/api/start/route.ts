@@ -124,6 +124,8 @@ export async function POST(req: Request) {
         const link = `${proto}://${host}/game/${p.token}`;
 
         await sendRoleEmail(p.email, p.name, roleContent, link);
+        // Add delay to prevent rate limiting (2 req/s limit)
+        await new Promise(r => setTimeout(r, 600));
     }
 
     return NextResponse.json({ success: true });
