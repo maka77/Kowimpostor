@@ -14,7 +14,7 @@ export async function sendRoleEmail(email: string, name: string, role: string, l
 
   try {
     const data = await resend.emails.send({
-      from: 'El Impostor <onboarding@resend.dev>',
+      from: 'El Impostor <noreply@kowi.com.ar>',
       to: email, // Only works for your own email in test mode unless domain verified
       subject: 'Tu Identidad Secreta - El Impostor',
       html: `
