@@ -99,7 +99,7 @@ export default function HostPage() {
 
     const openVoting = async () => {
         try {
-            const res = await fetch('/api/admin/vote-control', {
+            const res = await fetch('/api/vote-control', {
                 method: 'POST',
                 body: JSON.stringify({ sessionCode, action: 'OPEN' }),
                 headers: { 'Content-Type': 'application/json' }
@@ -117,7 +117,7 @@ export default function HostPage() {
 
     const closeVoting = async () => {
         try {
-            const res = await fetch('/api/admin/vote-control', {
+            const res = await fetch('/api/vote-control', {
                 method: 'POST',
                 body: JSON.stringify({ sessionCode, action: 'CLOSE' }),
                 headers: { 'Content-Type': 'application/json' }
