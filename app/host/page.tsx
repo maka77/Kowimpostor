@@ -98,21 +98,41 @@ export default function HostPage() {
     };
 
     const openVoting = async () => {
-        await fetch('/api/admin/vote-control', {
-            method: 'POST',
-            body: JSON.stringify({ sessionCode, action: 'OPEN' }),
-        });
-        fetchSessionInfo();
+        try {
+            const res = await fetch('/api/admin/vote-control', {
+                method: 'POST',
+                body: JSON.stringify({ sessionCode, action: 'OPEN' }),
+                headers: { 'Content-Type': 'application/json' }
+            });
+            if (!res.ok) {
+                const data = await res.json();
+                throw new Error(data.error || 'Failed to open voting');
+            }
+            fetchSessionInfo();
+        } catch (error) {
+            console.error('Error opening voting:', error);
+            alert('Error creating voting round. Check console.');
+        }
     };
 
     const closeVoting = async () => {
-        const res = await fetch('/api/admin/vote-control', {
-            method: 'POST',
-            body: JSON.stringify({ sessionCode, action: 'CLOSE' }),
-        });
-        const data = await res.json();
-        setLastResult(data);
-        fetchSessionInfo();
+        try {
+            const res = await fetch('/api/admin/vote-control', {
+                method: 'POST',
+                body: JSON.stringify({ sessionCode, action: 'CLOSE' }),
+                headers: { 'Content-Type': 'application/json' }
+            });
+            if (!res.ok) {
+                const data = await res.json();
+                throw new Error(data.error || 'Failed to close voting');
+            }
+            const data = await res.json();
+            setLastResult(data);
+            fetchSessionInfo();
+        } catch (error) {
+            console.error('Error closing voting:', error);
+            alert('Error closing voting. Check console.');
+        }
     };
 
     // Poll for updates if session exists
@@ -131,14 +151,19 @@ export default function HostPage() {
 
     const fetchSessionInfo = async () => {
         if (!sessionCode) return;
-        // I need to implement this endpoint.
-        // For now I'll stub it or quickly implement it in step 3.
-        const res = await fetch(`/api/session?code=${sessionCode}`);
-        if (res.ok) {
-            const data = await res.json();
-            setStatus(data.status);
-            setPlayers(data.players);
-            setRound(data.round);
+        try {
+            const res = await fetch(`/api/session?code=${sessionCode}`, {
+                cache: 'no-store',
+                headers: { 'Cache-Control': 'no-cache' }
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setStatus(data.status);
+                setPlayers(data.players);
+                setRound(data.round);
+            }
+        } catch (e) {
+            console.error("Polling error:", e);
         }
     };
 
