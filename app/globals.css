@@ -13,7 +13,7 @@ body {
 
 @layer components {
   .btn {
-    @apply px-4 py-2 rounded bg-neutral-800 hover:bg-neutral-700 transition-colors font-medium border border-neutral-700 text-sm tracking-wide uppercase;
+    @apply px-4 py-2 rounded bg-neutral-800 hover:bg-neutral-700 transition-colors font-medium border border-neutral-700 text-sm tracking-wide uppercase cursor-pointer disabled:cursor-not-allowed disabled:opacity-50;
   }
 
   .btn-primary {

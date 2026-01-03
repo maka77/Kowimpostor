@@ -285,10 +285,13 @@ export default function HostPage() {
                     <button
                         onClick={openVoting}
                         disabled={status === 'VOTING' || status.startsWith('FINISHED')}
-                        className={`btn ${status === 'PLAYING' ? 'btn-primary' : 'opacity-50'}`}
+                        className={`btn ${status === 'PLAYING' ? 'btn-primary' : ''}`}
                     >
                         Abrir Votación
                     </button>
+                    <div className="col-span-2 text-center text-xs text-neutral-600 font-mono">
+                        Debug Status: {status}
+                    </div>
 
                     <button
                         onClick={closeVoting}
