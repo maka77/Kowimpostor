@@ -135,6 +135,24 @@ export default function HostPage() {
         }
     };
 
+    const restartGame = async () => {
+        if (!confirm('¿Estás seguro de reiniciar la partida? Se volverá al Lobby y todos los jugadores serán revividos.')) return;
+        try {
+            const res = await fetch('/api/restart', {
+                method: 'POST',
+                body: JSON.stringify({ sessionCode }),
+                headers: { 'Content-Type': 'application/json' }
+            });
+            if (!res.ok) {
+                throw new Error('Failed to restart');
+            }
+            fetchSessionInfo();
+        } catch (e) {
+            console.error(e);
+            alert('Error restarting game');
+        }
+    };
+
     // Poll for updates if session exists
     // For MVP we just fetch the session state again. 
     // But wait, we don't have a GET /api/session endpoint exposed for Host!
@@ -300,6 +318,14 @@ export default function HostPage() {
                     >
                         Cerrar Votación
                     </button>
+                    <div className="col-span-2 pt-4 border-t border-neutral-800">
+                        <button
+                            onClick={restartGame}
+                            className="w-full btn bg-neutral-800 text-neutral-400 hover:bg-neutral-700 hover:text-white"
+                        >
+                            Reiniciar / Nueva Partida
+                        </button>
+                    </div>
                 </section>
             )}
 
